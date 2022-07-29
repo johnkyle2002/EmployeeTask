@@ -1,0 +1,17 @@
+﻿@page "/login"
+@using EmployeeTask.Shared.DataTrasferObject
+ 
+<EditForm Model="user" Context="User" OnSubmit="HandleLogin">
+    <div>
+        <ValidationSummary Model="user" ></ValidationSummary>
+    </div>
+    <label>Username</label>
+    <InputText @bind-Value="user.Username" />
+    <label>Password</label>
+    <InputText @bind-Value="user.Password" type="password" />
+    <button type="submit" > Submit</button>
+</EditForm>
+
+
+
+

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeTask.Models", "EmployeeTask\EmployeeTask.Models.csproj", "{1004B30E-F875-47DF-A517-36E9D8B923E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeTask.Models", "EmployeeTask\EmployeeTask.Models.csproj", "{1004B30E-F875-47DF-A517-36E9D8B923E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeTask.WebAPI", "EmployeeTask.WebAPI\EmployeeTask.WebAPI.csproj", "{1A72ACED-A354-42AD-8A58-258D49D4410A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeTask.WebAPI", "EmployeeTask.WebAPI\EmployeeTask.WebAPI.csproj", "{1A72ACED-A354-42AD-8A58-258D49D4410A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{59A1D9C1-335A-4C45-962B-539E3756A741}"
 EndProject
@@ -13,17 +13,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{A6AE11
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{374E5C62-6483-4513-AE4B-7C4FE9EE078D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeTask.Interface", "EmployeeTask.Interface\EmployeeTask.Interface.csproj", "{EDDA706C-046D-4441-90B9-CDCEBFD36729}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeTask.Interface", "EmployeeTask.Interface\EmployeeTask.Interface.csproj", "{EDDA706C-046D-4441-90B9-CDCEBFD36729}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeTask.Services", "EmployeeTask.Service\EmployeeTask.Services.csproj", "{F08E4E6E-7A66-4337-B2BC-0EA1968D2F31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeTask.Services", "EmployeeTask.Service\EmployeeTask.Services.csproj", "{F08E4E6E-7A66-4337-B2BC-0EA1968D2F31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeTask.Repositories", "EmployeeTask.Repositories\EmployeeTask.Repositories.csproj", "{299D22E4-D254-42DE-8871-20AA7334F082}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeTask.Repositories", "EmployeeTask.Repositories\EmployeeTask.Repositories.csproj", "{299D22E4-D254-42DE-8871-20AA7334F082}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeTask.Shared", "EmployeeTask.Shared\EmployeeTask.Shared.csproj", "{37C2EB21-95D6-4594-8B06-8BBAEF7F5C38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeTask.Shared", "EmployeeTask.Shared\EmployeeTask.Shared.csproj", "{37C2EB21-95D6-4594-8B06-8BBAEF7F5C38}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataMigration", "DataMigration", "{3FDF6685-3B59-4827-8A0F-B8EE443FF5C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeTask.DBMigration", "EmployeeTask.DBMigration\EmployeeTask.DBMigration.csproj", "{D1737E09-1FBD-4723-8CBD-E83A3ADE3E6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeTask.DBMigration", "EmployeeTask.DBMigration\EmployeeTask.DBMigration.csproj", "{D1737E09-1FBD-4723-8CBD-E83A3ADE3E6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeTask.BlazorClient", "EmployeeTask.BlazorClient\EmployeeTask.BlazorClient.csproj", "{7A0838A3-825F-43E6-96A8-1DC1D2861CDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,10 @@ Global
 		{D1737E09-1FBD-4723-8CBD-E83A3ADE3E6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1737E09-1FBD-4723-8CBD-E83A3ADE3E6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1737E09-1FBD-4723-8CBD-E83A3ADE3E6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A0838A3-825F-43E6-96A8-1DC1D2861CDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A0838A3-825F-43E6-96A8-1DC1D2861CDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A0838A3-825F-43E6-96A8-1DC1D2861CDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A0838A3-825F-43E6-96A8-1DC1D2861CDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,6 +77,7 @@ Global
 		{299D22E4-D254-42DE-8871-20AA7334F082} = {A6AE1192-0678-4507-B9B0-0199877CD616}
 		{37C2EB21-95D6-4594-8B06-8BBAEF7F5C38} = {374E5C62-6483-4513-AE4B-7C4FE9EE078D}
 		{D1737E09-1FBD-4723-8CBD-E83A3ADE3E6F} = {3FDF6685-3B59-4827-8A0F-B8EE443FF5C6}
+		{7A0838A3-825F-43E6-96A8-1DC1D2861CDE} = {59A1D9C1-335A-4C45-962B-539E3756A741}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A9E0EC07-7FE0-404C-9124-F705DE353C60}

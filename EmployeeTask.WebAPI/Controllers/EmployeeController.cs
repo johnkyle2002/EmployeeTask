@@ -1,11 +1,12 @@
 ﻿using EmployeeTask.Interface.Services;
 using EmployeeTask.Shared.DataTrasferObject;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeTask.WebAPI.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "User, Administrator")]
     [Route("api/[controller]")]
     [ApiController]
     public class EmployeeController : ControllerBase
