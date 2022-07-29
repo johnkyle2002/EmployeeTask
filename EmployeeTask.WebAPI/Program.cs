@@ -1,4 +1,7 @@
+using EmployeeTask.Interface.Repositories;
+using EmployeeTask.Interface.Services;
 using EmployeeTask.Repositories;
+using EmployeeTask.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -11,10 +14,17 @@ var configuration = builder.Configuration;
 
 var services = builder.Services;
 
-services.AddDbContext<EmployeeTaskDBContext>(option => {
+services.AddDbContext<EmployeeTaskDBContext>(option =>
+{
     option.UseSqlServer(builder.Configuration.GetConnectionString("EmployeeTaskDBContext"));
-});
+}, ServiceLifetime.Scoped);
 
+services.AddScoped<IEmployeeService, EmployeeService>();
+services.AddScoped<IEmployeeTemperatureService, EmployeeTemperatureService>();
+
+services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+services.AddScoped<IEmployeeTemperatureRepository, EmployeeTemperatureRepository>();
+services.AddScoped<IQueryableRepository, QueryableRepository>();
 
 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

@@ -43,13 +43,13 @@ namespace EmployeeTask.DBMigration.Data.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("EmployeeTask.Models.EmployeeTemparature", b =>
+            modelBuilder.Entity("EmployeeTask.Models.EmployeeTemperature", b =>
                 {
-                    b.Property<int>("EmployeeTemparatureID")
+                    b.Property<int>("EmployeeTemperatureID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeTemparatureID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeTemperatureID"), 1L, 1);
 
                     b.Property<int>("EmployeeNumber")
                         .HasColumnType("int");
@@ -60,14 +60,14 @@ namespace EmployeeTask.DBMigration.Data.Migrations
                     b.Property<decimal>("Temperature")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("EmployeeTemparatureID");
+                    b.HasKey("EmployeeTemperatureID");
 
                     b.HasIndex("EmployeeNumber");
 
                     b.ToTable("Temparatures");
                 });
 
-            modelBuilder.Entity("EmployeeTask.Models.EmployeeTemparature", b =>
+            modelBuilder.Entity("EmployeeTask.Models.EmployeeTemperature", b =>
                 {
                     b.HasOne("EmployeeTask.Models.Employee", "Employee")
                         .WithMany("Temparatures")

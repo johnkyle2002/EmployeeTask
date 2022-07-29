@@ -2,96 +2,54 @@
 using EmployeeTask.Models;
 using EmployeeTask.Shared.DataTrasferObject;
 using EmployeeTask.Shared.Enumerator;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace EmployeeTask.Repositories
 {
-    public class EmployeeRepository : IEmployeeRepository
+    public class EmployeeTemperatureRepository: IEmployeeTemperatureRepository
     {
         private readonly EmployeeTaskDBContext _context;
-        private readonly ILogger<EmployeeRepository> _logger;
+        private readonly ILogger<EmployeeTemperatureRepository> _logger;
 
-        public EmployeeRepository(EmployeeTaskDBContext context,
-            ILogger<EmployeeRepository> logger)
+        public EmployeeTemperatureRepository(EmployeeTaskDBContext context,
+            ILogger<EmployeeTemperatureRepository> logger)
         {
             _context = context;
             _logger = logger;
         }
 
-        /// <summary>
-        /// Return Employee ID only
-        /// </summary>
-        /// <param name=""></param>
-        /// <returns></returns>
-        public async Task<IOperationResult<int?>> Create(EmployeeDTO employee)
+        public async Task<IOperationResult<int?>> Create(EmployeeTemperatureDTO temperature)
         {
             try
             {
-                if (employee is null)
+                if (temperature is null)
                     return new OperationResult<int?>
                     {
                         StatusCode = StatusCodeEnum.Code.BadRequest,
                         Message = "Employee must not be null."
                     };
 
-                var model = new Employee
+                var model = new EmployeeTemperature
                 {
-                    FirstName = employee.FirstName,
-                    Lastname = employee.Lastname
+                    EmployeeNumber = temperature.EmployeeNumber,
+                    Temperature = temperature.Temperature
                 };
 
-                await _context.Employees.AddAsync(model);
+                await _context.Temparatures.AddAsync(model);
                 await _context.SaveChangesAsync();
 
                 return new OperationResult<int?>
                 {
-                    Entity = model.EmployeeNumber,
                     StatusCode = StatusCodeEnum.Code.Ok,
                     Message = "Successfully created."
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"EmployeeRepository.Create");
+                _logger.LogError(ex, $"EmployeeTemperatureRepository.Create");
 
                 return new OperationResult<int?>
-                {
-                    StatusCode = Shared.Enumerator.StatusCodeEnum.Code.InternalError,
-                    Message = "Error found."
-                };
-            }
-        }
-
-        public async Task<IOperationResult> Update(EmployeeDTO employee)
-        {
-            try
-            {
-                var model = _context.Employees.FirstOrDefault(e => e.EmployeeNumber == employee.EmployeeNumber);
-
-                if (model is null)
-                    return new OperationResult<EmployeeDTO>
-                    {
-                        Message = "Not found",
-                        StatusCode = StatusCodeEnum.Code.BadRequest
-                    };
-
-                model.FirstName = employee.FirstName;
-                model.Lastname = employee.Lastname;
-
-                _context.Employees.Update(model);
-                await _context.SaveChangesAsync();
-
-                return new OperationResult
-                {
-                    StatusCode = StatusCodeEnum.Code.Ok,
-                    Message = "Successfully saved!"
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"EmployeeRepository.Update");
-
-                return new OperationResult
                 {
                     StatusCode = StatusCodeEnum.Code.InternalError,
                     Message = "Error found."
@@ -99,11 +57,48 @@ namespace EmployeeTask.Repositories
             }
         }
 
-        public async Task<IOperationResult> Remove(int empNumber)
+        public async Task<IOperationResult> Update(EmployeeTemperatureDTO temperature)
         {
             try
             {
-                var model = _context.Employees.FirstOrDefault(e => e.EmployeeNumber == empNumber);
+                var model = _context.Temparatures.FirstOrDefault(e => e.EmployeeTemperatureID == temperature.EmployeeTemperatureID);
+
+                if (model is null)
+                    return new OperationResult<EmployeeTemperatureDTO>
+                    {
+                        Message = "Not found",
+                        StatusCode = StatusCodeEnum.Code.BadRequest
+                    };
+
+                model.RecordDate = temperature.RecordDate;
+                model.Temperature = temperature.Temperature;
+
+                _context.Temparatures.Update(model);
+                await _context.SaveChangesAsync();
+
+                return new OperationResult<EmployeeTemperatureDTO>
+                {
+                    StatusCode = StatusCodeEnum.Code.Ok,
+                    Message = "Successfully saved!"
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"EmployeeTemperatureRepository.Update");
+
+                return new OperationResult<EmployeeTemperatureDTO>
+                {
+                    StatusCode = StatusCodeEnum.Code.InternalError,
+                    Message = "Error found."
+                };
+            }
+        }
+
+        public async Task<IOperationResult> Remove(int tempID)
+        {
+            try
+            {
+                var model = _context.Temparatures.FirstOrDefault(e => e.EmployeeTemperatureID == tempID);
 
                 if (model is null)
                     return new OperationResult
@@ -112,7 +107,7 @@ namespace EmployeeTask.Repositories
                         Message = "Not found."
                     };
 
-                _context.Employees.Remove(model);
+                _context.Temparatures.Remove(model);
                 await _context.SaveChangesAsync();
 
                 return new OperationResult
@@ -123,7 +118,7 @@ namespace EmployeeTask.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"EmployeeRepository.Remove");
+                _logger.LogError(ex, $"EmployeeTemperatureRepository.Remove");
 
                 return new OperationResult
                 {

@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EmployeeTask.Repositories\EmployeeTask.Repositories.csproj" />
+    <ProjectReference Include="..\EmployeeTask.Service\EmployeeTask.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

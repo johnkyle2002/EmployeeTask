@@ -4,7 +4,7 @@
 
 namespace EmployeeTask.DBMigration.Data.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,7 +26,7 @@ namespace EmployeeTask.DBMigration.Data.Migrations
                 name: "Temparatures",
                 columns: table => new
                 {
-                    EmployeeTemparatureID = table.Column<int>(type: "int", nullable: false)
+                    EmployeeTemperatureID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeNumber = table.Column<int>(type: "int", nullable: false),
                     Temperature = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -34,7 +34,7 @@ namespace EmployeeTask.DBMigration.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Temparatures", x => x.EmployeeTemparatureID);
+                    table.PrimaryKey("PK_Temparatures", x => x.EmployeeTemperatureID);
                     table.ForeignKey(
                         name: "FK_Temparatures_Employees_EmployeeNumber",
                         column: x => x.EmployeeNumber,

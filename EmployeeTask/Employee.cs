@@ -10,8 +10,8 @@ namespace EmployeeTask.Models
         public string FirstName { get; set; } = string.Empty;
         public string Lastname { get; set; } = string.Empty;
 
-        [InverseProperty(nameof(EmployeeTemparature.Employee))]
-        public virtual ICollection<EmployeeTemparature>? Temparatures { get; set; }
+        [InverseProperty(nameof(EmployeeTemperature.Employee))]
+        public virtual ICollection<EmployeeTemperature>? Temparatures { get; set; }
     }
 
 }

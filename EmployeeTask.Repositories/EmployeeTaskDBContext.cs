@@ -15,6 +15,6 @@ namespace EmployeeTask.Repositories
         }
 
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<EmployeeTemparature> Temparatures { get; set; }
+        public DbSet<EmployeeTemperature> Temparatures { get; set; }
     }
 }

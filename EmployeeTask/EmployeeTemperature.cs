@@ -2,9 +2,9 @@
 
 namespace EmployeeTask.Models
 {
-    public class EmployeeTemparature
+    public class EmployeeTemperature
     {
-        public int EmployeeTemparatureID { get; set; }
+        public int EmployeeTemperatureID { get; set; }
         public int EmployeeNumber { get; set; }
         public decimal Temperature { get; set; }
         public DateTime RecordDate { get; set; }
