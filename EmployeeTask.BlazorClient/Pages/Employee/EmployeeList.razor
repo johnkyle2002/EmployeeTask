@@ -1,5 +1,8 @@
 ﻿@page "/employee"
+@using EmployeeTask.Shared.DataTrasferObject
 @using Microsoft.AspNetCore.Authorization
+@using System.Text.Json
+@using System.Text.Json.Serialization
 @inject HttpClient Http
 @attribute [Authorize]
 @inject HttpClient _client
@@ -9,7 +12,7 @@
 <h1>Employee List</h1>
 
 
-@if (forecasts == null)
+@if (employees == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -18,20 +21,20 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>Employee Number</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Temperature</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var employee in employees)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@employee.EmployeeNumber</td>
+                    <td>@employee.FirstName</td>
+                    <td>@employee.Lastname</td>
+                    <td>@string.Join(", ", employee.Temperature.Select(s=> s.Temperature))</td>
                 </tr>
             }
         </tbody>
@@ -39,24 +42,22 @@ else
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+
+    private IList<EmployeeDTO> employees;
 
     protected override async Task OnInitializedAsync()
     {
-     var request =    
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
-    }
+        var options = new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                NumberHandling = JsonNumberHandling.AllowReadingFromString                 
+            };
 
+        var request = await _client.GetFromJsonAsync<OperationResult<IList<EmployeeDTO>>>("https://localhost:7250/api/Employee/GetAll", options);
 
+        if (request?.StatusCode == EmployeeTask.Shared.Enumerator.StatusCodeEnum.Code.Ok)
+            employees = request.Entity;
 
-    public class WeatherForecast
-    {
-        public DateTime Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public string? Summary { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-    }
+    }     
 }

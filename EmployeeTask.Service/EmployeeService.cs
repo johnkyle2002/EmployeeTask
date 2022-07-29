@@ -73,7 +73,8 @@ namespace EmployeeTask.Services
                 {
                     FirstName = s.FirstName,
                     Lastname = s.Lastname,
-                    EmployeeNumber = s.EmployeeNumber
+                    EmployeeNumber = s.EmployeeNumber,
+                    Temperature = s.Temperature,
                 }).ToListAsync();
 
                 return new OperationResult<IList<EmployeeDTO>>
