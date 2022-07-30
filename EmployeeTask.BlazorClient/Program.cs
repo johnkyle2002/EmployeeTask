@@ -23,5 +23,6 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IEmployeeTemperatureService, EmployeeTemperatureService>();
 
 await builder.Build().RunAsync();

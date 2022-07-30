@@ -2,7 +2,7 @@
 
 namespace EmployeeTask.Shared.DataTrasferObject
 {
-    public class EmployeeDTO : BaseDTO
+    public class EmployeeDTO : CommandDTO
     {
         public int EmployeeNumber { get; set; }
         [Required(ErrorMessage = "First name field is required.")]

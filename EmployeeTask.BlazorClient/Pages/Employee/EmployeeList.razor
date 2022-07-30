@@ -9,6 +9,7 @@
 @using Newtonsoft.Json
 @attribute [Authorize]
 @inject IEmployeeService _employeeService
+@inject IEmployeeTemperatureService _employeeTemperatureService
 @inject IJSRuntime _jsRuntime
 <PageTitle>Employee</PageTitle>
 <div class="float-end"><a href="/employee/create">Create</a></div>
@@ -128,22 +129,61 @@ else
                     <td>@employee.EmployeeNumber</td>
                     <td>@employee.FirstName</td>
                     <td>@employee.Lastname</td>
-                    <td>@string.Join(", ", employee.Temperature.Select(s=> s.Temperature))</td>
+                    <td>
+                        @*  @string.Join(", ", employee.Temperature.Select(s=> s.Temperature.ToString("#0.0")))
+                *@
+                        @foreach (var tempe in employee.Temperature)
+                        {
+                            <span type="button" class="btn btn-sm btn-outline-info position-relative m-2" title="@(tempe.RecordDate.ToString("dd MMM yyy"))">
+                                @tempe.Temperature.ToString("#0.0")
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" @onclick="()=> RemoveTemperature(employee, tempe)">
+                                    x
+                                </span>
+                            </span>
+                        }
+                    </td>
                     <td>
                         <a href="/employee/update/@employee.EmployeeNumber">Edit</a>
-                        <a href="javascript:;" @onclick="()=> employee.Delete = true">Delete</a>
+                        <a href="javascript:;" @onclick="()=> employee.DeleteCommand = true">Delete</a>
+                        <a href="javascript:;" @onclick="()=> employee.AddCommand = true">Add Temperature</a>
                     </td>
                 </tr>
-                @if (employee.Delete)
+                @if (employee.DeleteCommand)
                 {
                     <tr>
                         <td colspan="6">
                             <p>Delete record?</p>
                             <p class="text-danger">@employee.ErrorMessage</p>
                             <div class="text-end">
-                                <button type="button" class="btn btn-secondary" @onclick="()=> employee.Delete = false">Cancel</button>
+                                <button type="button" class="btn btn-secondary" @onclick="()=> employee.DeleteCommand = false">Cancel</button>
                                 <button type="button" class="btn btn-primary" @onclick="() => DeleteEmployee(employee)">Delete</button>
                             </div>
+                        </td>
+                    </tr>
+                }
+                @if (employee.AddCommand)
+                {
+                    <tr>
+                        <td colspan="6">
+                            <EditForm Model="temperature" Context="temperatureContext" OnSubmit="() => AddTemparature(employee)">
+                                <DataAnnotationsValidator></DataAnnotationsValidator>
+                                <div class="col-auto row ">
+                                    <div class="col-auto ">
+                                        <InputNumber @bind-Value="temperature.Temperature" step="0.2" class="form-control col-md-3" placeholder="Start Range"></InputNumber>
+                                        <ValidationMessage For="()=> temperature.Temperature" class="text-danger"></ValidationMessage>
+                                    </div>
+                                    <span class="col-auto p-2">To</span>
+                                    <div class="col-auto ">
+                                        <InputDate @bind-Value="temperature.RecordDate" class="form-control col-md-3"></InputDate>
+                                        <ValidationMessage For="()=> temperature.RecordDate" class="text-danger"></ValidationMessage>
+                                    </div>
+                                </div>
+                                <p class="text-danger">@employee.ErrorMessage</p>
+                                <div class="text-end">
+                                    <button type="button" class="btn btn-secondary" @onclick="()=> employee.AddCommand = false">Cancel</button>
+                                    <button type="submit" class="btn btn-primary">Add</button>
+                                </div>
+                            </EditForm>
                         </td>
                     </tr>
                 }
@@ -157,6 +197,7 @@ else
     private IList<EmployeeDTO> employees;
     private IList<EmployeeFilterDTO> Filters = new List<EmployeeFilterDTO>();
     private EmployeeFilterDTO Filter = new();
+    private EmployeeTemperatureDTO temperature = new() { Temperature = 36, RecordDate = DateTime.UtcNow };
     private bool ShowAddFilter = false;
     private bool ShowDeleteMessage = false;
 
@@ -215,5 +256,37 @@ else
             employees.Remove(employee);
         else
             employee.ErrorMessage = result.Message;
+    }
+
+    async Task AddTemparature(EmployeeDTO employee)
+    {
+        temperature.EmployeeNumber = employee.EmployeeNumber;
+        var result = await _employeeTemperatureService.Create(temperature);
+
+        if (result.StatusCode == StatusCodeEnum.Code.Ok)
+        {
+            temperature.EmployeeTemperatureID = result.Entity ?? 0;
+            employee.Temperature.Add(new EmployeeTemperatureDTO
+                {
+                    EmployeeNumber = temperature.EmployeeNumber,
+                    EmployeeTemperatureID = temperature.EmployeeTemperatureID,
+                    RecordDate = temperature.RecordDate,
+                    Temperature = temperature.Temperature
+                });
+            employee.AddCommand = false;
+            temperature = new() { Temperature = 36, RecordDate = DateTime.UtcNow };
+        }
+        else
+            employee.ErrorMessage = result.Message;
+    }
+
+    async Task RemoveTemperature(EmployeeDTO employee, EmployeeTemperatureDTO temperature)
+    {
+        var result = await _employeeTemperatureService.Remove(temperature.EmployeeTemperatureID);
+
+        if (result.StatusCode == StatusCodeEnum.Code.Ok)
+            employee.Temperature.Remove(temperature);
+        else
+            await _jsRuntime.InvokeVoidAsync("console.log", result.Message);
     }
 }

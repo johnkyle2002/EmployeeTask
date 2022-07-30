@@ -7,7 +7,7 @@ namespace EmployeeTask.Shared.DataTrasferObject
         public int EmployeeTemperatureID { get; set; }
         [Required]
         public int EmployeeNumber { get; set; }
-        [Required]
+        [Required]        
         public decimal Temperature { get; set; }
         [Required]
         public DateTime RecordDate { get; set; }

@@ -2,6 +2,7 @@
 using EmployeeTask.Models;
 using EmployeeTask.Shared.DataTrasferObject;
 using EmployeeTask.Shared.Enumerator;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace EmployeeTask.Repositories

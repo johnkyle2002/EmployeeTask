@@ -34,6 +34,7 @@
 
 
 @code {
+    bool isProcessing = false;
     protected EditContext editContext { get; set; }
     protected ValidationMessageStore messageStore { get; set; }
 
@@ -58,6 +59,10 @@
 
     async Task Create()
     {
+        if (isProcessing)
+            return;
+
+        isProcessing = true;
         messageStore.Clear();
         if (editContext.Validate())
         {
@@ -66,7 +71,8 @@
                 _navmanager.NavigateTo("/employee");
             else
                 messageStore.Add(() => employee.ErrorMessage, createResult.Message);
-        } 
+        }
+        isProcessing = false;
     }
 
 }
