@@ -1,15 +1,108 @@
 ﻿@page "/employee"
+@using EmployeeTask.Interface.Services
 @using EmployeeTask.Shared.DataTrasferObject
+@using EmployeeTask.Shared.Enumerator
 @using Microsoft.AspNetCore.Authorization
 @using System.Text.Json
 @using System.Text.Json.Serialization
-@inject HttpClient Http
+@using EmployeeTask.Shared.Extension
+@using Newtonsoft.Json
 @attribute [Authorize]
-@inject HttpClient _client
-
+@inject IEmployeeService _employeeService
+@inject IJSRuntime _jsRuntime
 <PageTitle>Employee</PageTitle>
-
+<div class="float-end"><a href="/employee/create">Create</a></div>
 <h1>Employee List</h1>
+
+<div>
+    @if (!ShowAddFilter)
+    {
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" @onclick="()=> { ShowAddFilter = !ShowAddFilter;}">
+            Add Filter
+        </button>
+    }
+
+    @if (ShowAddFilter)
+    {
+        <EditForm Model="Filter" Context="FilterContext">
+            <div class="row">
+                <div class="col-auto">
+                    <InputSelect TValue="EmployeeFilterEnum.Employee" @bind-Value="Filter.FilterBy" class="form-control" id="exampleFormControlSelect1">
+                        <option value="">Select field</option>
+                        @foreach (var filter in Enum.GetValues(typeof(EmployeeFilterEnum.Employee)))
+                        {
+                            <option value="@filter">@filter.Description()</option>
+                        }
+                    </InputSelect>
+                </div>
+                @switch (Filter.FilterBy)
+                {
+                    case EmployeeFilterEnum.Employee.FirstName:
+                    case EmployeeFilterEnum.Employee.LastName:
+                        <div class="col-auto row">
+                            <InputText @bind-Value="Filter.FilterValue" class="form-control col-md-3" placeholder="Input value"></InputText>
+                        </div>
+                        break;
+                    case EmployeeFilterEnum.Employee.Temperature:
+                        <div class="col-auto row ">
+                            <div class="col-auto ">
+                                <InputNumber @bind-Value="Filter.StartDecimal" step="0.2" class="form-control col-md-3" placeholder="Start Range"></InputNumber>
+                            </div>
+                            <span class="col-auto p-2">To</span>
+                            <div class="col-auto ">
+                                <InputNumber @bind-Value="Filter.EndDecimal" step="0.2" class="form-control col-md-3" placeholder="End Range"></InputNumber>
+                            </div>
+                        </div>
+                        break;
+                    case EmployeeFilterEnum.Employee.RecordDate:
+                        <div class="col-auto row ">
+                            <div class="col-auto ">
+                                <InputDate TValue="DateTime" @bind-Value="Filter.StartDate" class="form-control col-md-3" placeholder="Start Range"></InputDate>
+                            </div>
+                            <span class="col-auto p-2">To</span>
+                            <div class="col-auto ">
+                                <InputDate TValue="DateTime" @bind-Value="Filter.EndDate" class="form-control col-md-3" placeholder="End Range"></InputDate>
+                            </div>
+                        </div>
+                        break;
+                }
+            </div>
+            <div class="mt-3">
+                <button type="button" class="btn btn-secondary" @onclick="CancelFilter">Cancel</button>
+                <button type="button" class="btn btn-primary" @onclick="AddFilter">Add</button>
+            </div>
+
+        </EditForm>
+    }
+
+</div>
+<div>
+    @foreach (var item in Filters)
+    {
+        switch (item.FilterBy)
+        {
+            case EmployeeFilterEnum.Employee.FirstName:
+            case EmployeeFilterEnum.Employee.LastName:
+                <div class="btn-group m-1" role="group" aria-label="First group">
+                    <span class="btn btn-secondary">@item.FilterBy: "@item.FilterValue"</span>
+                    <button type="button" class="btn btn-secondary" @onclick="()=> RemoveFilter(item)">x</button>
+                </div>
+                break;
+            case EmployeeFilterEnum.Employee.Temperature:
+                <div class="btn-group m-1" role="group" aria-label="First group">
+                    <span class="btn btn-secondary">@item.FilterBy: "@item.StartDecimal.ToString("#0.0") - @item.StartDecimal.ToString("#0.0")"</span>
+                    <button type="button" class="btn btn-secondary" @onclick="()=> RemoveFilter(item)">x</button>
+                </div>
+                break;
+            case EmployeeFilterEnum.Employee.RecordDate:
+                <div class="btn-group m-1" role="group" aria-label="First group">
+                    <span class="btn btn-secondary">@item.FilterBy: "@item.StartDate.ToString("dd-MMM-yy") - @item.EndDate.ToString("dd-MMM-yy")"</span>
+                    <button type="button" class="btn btn-secondary" @onclick="()=> RemoveFilter(item)">x</button>
+                </div>
+                break;
+        }
+    }
+</div>
 
 
 @if (employees == null)
@@ -44,20 +137,54 @@ else
 @code {
 
     private IList<EmployeeDTO> employees;
+    private IList<EmployeeFilterDTO> Filters = new List<EmployeeFilterDTO>();
+    private EmployeeFilterDTO Filter = new();
+    private bool ShowAddFilter = false;
 
     protected override async Task OnInitializedAsync()
     {
-        var options = new JsonSerializerOptions()
-            {
-                PropertyNameCaseInsensitive = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                NumberHandling = JsonNumberHandling.AllowReadingFromString                 
-            };
-
-        var request = await _client.GetFromJsonAsync<OperationResult<IList<EmployeeDTO>>>("https://localhost:7250/api/Employee/GetAll", options);
+        var request = await _employeeService.GetAll();
 
         if (request?.StatusCode == EmployeeTask.Shared.Enumerator.StatusCodeEnum.Code.Ok)
             employees = request.Entity;
+    }
 
-    }     
+    async Task AddFilter(EmployeeFilterDTO filter)
+    {
+        await Task.CompletedTask;
+    }
+
+    void CancelFilter()
+    {
+        Filter = new EmployeeFilterDTO();
+        ShowAddFilter = false;
+    }
+
+    async Task AddFilter()
+    {
+        var filter = Filters.FirstOrDefault(a => a.FilterBy == Filter.FilterBy);
+
+        if (filter is not null)
+            Filters.Remove(filter);
+
+        Filters.Add(Filter);
+        CancelFilter();
+
+        await RequestFilter();
+    }
+
+    async Task RemoveFilter(EmployeeFilterDTO filter)
+    {
+        Filters.Remove(filter);
+        await RequestFilter();
+    }
+
+    async Task RequestFilter()
+    {
+        var requestResult = await _employeeService.GetAllByFilter(Filters);
+        if (requestResult?.StatusCode == StatusCodeEnum.Code.Ok)
+            employees = requestResult.Entity;
+        else
+            await _jsRuntime.InvokeVoidAsync("console.log", requestResult?.Message);
+    }
 }

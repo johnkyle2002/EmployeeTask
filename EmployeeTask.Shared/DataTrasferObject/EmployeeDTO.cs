@@ -6,7 +6,9 @@ namespace EmployeeTask.Shared.DataTrasferObject
     {
         public int EmployeeNumber { get; set; }
         [Required(ErrorMessage ="First name field is required.")]
+        [RegularExpression(pattern:"[A-Za-z ")]
         public string FirstName { get; set; }
+        [RegularExpression(pattern:"[A-Za-z ")]
         [Required(ErrorMessage = "Last name field is required.")]
         public string Lastname { get; set; }
 

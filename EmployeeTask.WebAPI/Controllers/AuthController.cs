@@ -50,7 +50,7 @@ namespace EmployeeTask.WebAPI.Controllers
                     issuer: _options.Value.Issuer,
                     audience: _options.Value.Audience,
                     claims: claims,
-                    expires: DateTime.UtcNow.AddMinutes(15),
+                    expires: DateTime.UtcNow.AddDays(15),
                     notBefore: DateTime.UtcNow,
                     signingCredentials: new SigningCredentials(
                         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Value.Key)),

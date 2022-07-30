@@ -1,6 +1,7 @@
 using Blazored.LocalStorage;
 using EmployeeTask.BlazorClient;
 using EmployeeTask.BlazorClient.FactoryService;
+using EmployeeTask.Interface.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -16,5 +17,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, CustomeAuthStateProvider
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
+
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 await builder.Build().RunAsync();

@@ -25,7 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataMigration", "DataMigrat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeTask.DBMigration", "EmployeeTask.DBMigration\EmployeeTask.DBMigration.csproj", "{D1737E09-1FBD-4723-8CBD-E83A3ADE3E6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeTask.BlazorClient", "EmployeeTask.BlazorClient\EmployeeTask.BlazorClient.csproj", "{7A0838A3-825F-43E6-96A8-1DC1D2861CDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmployeeTask.BlazorClient", "EmployeeTask.BlazorClient\EmployeeTask.BlazorClient.csproj", "{7A0838A3-825F-43E6-96A8-1DC1D2861CDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

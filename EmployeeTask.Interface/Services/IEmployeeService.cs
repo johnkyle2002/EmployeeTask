@@ -7,6 +7,7 @@ namespace EmployeeTask.Interface.Services
         Task<IOperationResult<int?>> Create(EmployeeDTO employee);
         Task<IOperationResult<EmployeeDTO>> Get(int empNumber);
         Task<IOperationResult<IList<EmployeeDTO>>> GetAll();
+        Task<IOperationResult<IList<EmployeeDTO>>> GetAllByFilter(IList<EmployeeFilterDTO> filters);
         Task<IOperationResult> Remove(int empNumber);
         Task<IOperationResult> Update(EmployeeDTO employee);
     }

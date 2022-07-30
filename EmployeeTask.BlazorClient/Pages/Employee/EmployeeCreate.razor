@@ -1,0 +1,34 @@
+﻿@page "/employee/create"
+@using EmployeeTask.Shared.DataTrasferObject
+<h3>Create</h3>
+
+<EditForm Model="employee">
+    <div>
+        <div class="row g-3">
+            <label for="staticEmail" class="col-auto">First name</label>
+            <div class="col-md-4">
+                <InputText @bind-Value="employee.FirstName" class="form-control"></InputText>
+            </div>
+        </div>
+        <div class="row g-3 mt-1">
+            <label for="inputPassword" class="col-auto">Last Name</label>
+            <div class="col-md-4">
+                <InputText @bind-Value="employee.FirstName" class="form-control"></InputText>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-5 text-end">
+                <a href="/Employee" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+
+@code {
+    EmployeeDTO employee = new EmployeeDTO();
+
+
+
+}

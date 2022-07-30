@@ -41,16 +41,14 @@ namespace EmployeeTask.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<IOperationResult<int>>> Create(EmployeeDTO emp)
         {
-            var result = await _employeeService.Create(emp);
-
+            var result = await _employeeService.Create(emp); 
             return Ok(result);
         }
 
         [HttpPut]
         public async Task<ActionResult<IOperationResult>> Update(EmployeeDTO emp)
         {
-            var result = await _employeeService.Update(emp);
-
+            var result = await _employeeService.Update(emp); 
             return Ok(result);
         }
 
@@ -59,6 +57,13 @@ namespace EmployeeTask.WebAPI.Controllers
         {
             var result = await _employeeService.Remove(empNumber);
 
+            return Ok(result);
+        }
+
+        [HttpPost("GetByFilter")]
+        public async Task<ActionResult<IOperationResult<IList<EmployeeDTO>>>> GetAllByFilter(IList<EmployeeFilterDTO> filters)
+        {
+            var result = await _employeeService.GetAllByFilter(filters);
             return Ok(result);
         }
     }

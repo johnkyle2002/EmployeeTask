@@ -104,5 +104,56 @@ namespace EmployeeTask.Services
         {
             return await _repository.Update(employee);
         }
+
+        public async Task<IOperationResult<IList<EmployeeDTO>>> GetAllByFilter(IList<EmployeeFilterDTO> filters)
+        {
+            if (filters is null || !filters.Any())
+                return new OperationResult<IList<EmployeeDTO>>
+                {
+                    StatusCode = StatusCodeEnum.Code.Ok,
+                    Entity = await _query.EmpoyeeQuery().ToListAsync()
+                };
+
+            try
+            {
+                var employee = _query.EmpoyeeQuery();
+                foreach (var item in filters)
+                {
+                    switch (item.FilterBy)
+                    {
+                        case EmployeeFilterEnum.Employee.FirstName:
+                            employee = employee.Where(w => EF.Functions.Like(w.FirstName, $"%{item.FilterValue}%"));
+                            break;
+                        case EmployeeFilterEnum.Employee.LastName:
+                            employee = employee.Where(w => EF.Functions.Like(w.Lastname, $"%{item.FilterValue}%"));
+                            break;
+                        case EmployeeFilterEnum.Employee.Temperature:
+                            employee = employee.Where(w => w.Temperature.Any(a=> a.Temperature >= item.StartDecimal && a.Temperature <= item.EndDecimal));
+                            break;
+                        case EmployeeFilterEnum.Employee.RecordDate:
+                            employee = employee.Where(w => w.Temperature.Any(a => a.RecordDate >= item.StartDate && a.RecordDate <= item.EndDate));
+                            break;
+                    }
+                }
+
+                return new OperationResult<IList<EmployeeDTO>>
+                {
+                    StatusCode = StatusCodeEnum.Code.Ok,
+                    Entity = await employee.ToListAsync()
+                };
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"EmployeeService.GetAllByFilter");
+
+                return new OperationResult<IList<EmployeeDTO>>
+                {
+                    Message = "Error found.",
+                    StatusCode = StatusCodeEnum.Code.InternalError,
+                };
+            }
+
+        }
     }
 }
