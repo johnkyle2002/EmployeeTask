@@ -27,7 +27,7 @@ namespace EmployeeTask.WebAPI.Controllers
         }
 
 
-        [HttpGet("Get")]
+        [HttpGet("Get/{empID}")]
         public async Task<ActionResult<IOperationResult<EmployeeDTO>>> Get(int empID)
         {
             if (empID == 0)
@@ -41,18 +41,18 @@ namespace EmployeeTask.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<IOperationResult<int>>> Create(EmployeeDTO emp)
         {
-            var result = await _employeeService.Create(emp); 
+            var result = await _employeeService.Create(emp);
             return Ok(result);
         }
 
         [HttpPut]
         public async Task<ActionResult<IOperationResult>> Update(EmployeeDTO emp)
         {
-            var result = await _employeeService.Update(emp); 
+            var result = await _employeeService.Update(emp);
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{empNumber}")]
         public async Task<ActionResult<IOperationResult>> Delete(int empNumber)
         {
             var result = await _employeeService.Remove(empNumber);

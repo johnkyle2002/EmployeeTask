@@ -11,7 +11,7 @@ namespace EmployeeTask.BlazorClient.FactoryService
 {
     public class EmployeeService : IEmployeeService
     {
-        private readonly HttpClient _client; 
+        private readonly HttpClient _client;
         private readonly JsonSerializerOptions options = new JsonSerializerOptions()
         {
             PropertyNameCaseInsensitive = true,
@@ -21,12 +21,12 @@ namespace EmployeeTask.BlazorClient.FactoryService
         public EmployeeService(HttpClient client)
         {
             _client = client;
-            _client.BaseAddress = new Uri("https://localhost:7250");
+            _client.BaseAddress = new Uri("https://localhost:7250/api/");
         }
 
         public async Task<IOperationResult<int?>> Create(EmployeeDTO employee)
         {
-            var request = await _client.PostAsJsonAsync("/api/Employee/create", employee);
+            var request = await _client.PostAsJsonAsync("Employee", employee);
 
             var content = await request.Content.ReadAsStringAsync();
 
@@ -42,16 +42,25 @@ namespace EmployeeTask.BlazorClient.FactoryService
             return result;
         }
 
-        public Task<IOperationResult<EmployeeDTO>> Get(int empNumber)
+        public async Task<IOperationResult<EmployeeDTO>> Get(int empNumber)
         {
-            throw new NotImplementedException();
+            var request = await _client.GetFromJsonAsync<OperationResult<EmployeeDTO>>($"Employee/Get/{empNumber}", options);
+
+            if (request is null)
+                request = new OperationResult<EmployeeDTO>
+                {
+                    StatusCode = StatusCodeEnum.Code.BadRequest,
+                    Message = "Unable to retrieved record"
+                };
+
+            return request;
         }
 
         public async Task<IOperationResult<IList<EmployeeDTO>>> GetAll()
         {
-            var request = await _client.GetFromJsonAsync<OperationResult<IList<EmployeeDTO>>>("https://localhost:7250/api/Employee/GetAll", options);
+            var request = await _client.GetFromJsonAsync<OperationResult<IList<EmployeeDTO>>>("Employee/GetAll", options);
 
-            if(request is null)
+            if (request is null)
                 request = new OperationResult<IList<EmployeeDTO>>
                 {
                     StatusCode = StatusCodeEnum.Code.BadRequest,
@@ -80,14 +89,39 @@ namespace EmployeeTask.BlazorClient.FactoryService
 
         }
 
-        public Task<IOperationResult> Remove(int empNumber)
+        public async Task<IOperationResult> Remove(int empNumber)
         {
-            throw new NotImplementedException();
+            var request = await _client.DeleteAsync($"Employee/{empNumber}");
+            var content = await request.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<OperationResult>(content);
+
+            if (result is null)
+                result = new OperationResult
+                {
+                    StatusCode = StatusCodeEnum.Code.BadRequest,
+                    Message = "Unable to delete record"
+                };
+
+            return result;
         }
 
-        public Task<IOperationResult> Update(EmployeeDTO employee)
+        public async Task<IOperationResult> Update(EmployeeDTO employee)
         {
-            throw new NotImplementedException();
+            var request = await _client.PutAsJsonAsync("Employee", employee);
+
+            var content = await request.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<OperationResult>(content);
+
+            if (result is null)
+                result = new OperationResult
+                {
+                    StatusCode = StatusCodeEnum.Code.BadRequest,
+                    Message = "Unable to update record"
+                };
+
+            return result;
         }
     }
 }

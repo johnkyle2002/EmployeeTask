@@ -1,0 +1,90 @@
+﻿@page "/employee/update/{id:int}"
+@using EmployeeTask.Interface.Services
+@using EmployeeTask.Shared.DataTrasferObject
+@using EmployeeTask.Shared.Enumerator
+<h3>Create</h3>
+@inject IEmployeeService _employeeService
+@inject NavigationManager _navmanager
+@if (editContext is not null)
+{
+    <EditForm EditContext="editContext" OnValidSubmit="Update">
+        <div>
+            <ValidationMessage For="()=> employee.ErrorMessage" class="text-danger"></ValidationMessage>
+        </div>
+        <div>
+            <div class="row g-3">
+                <label for="staticEmail" class="col-auto">Employee Number</label>
+                <div class="col-md-4">
+                    <input readonly value="@employee.EmployeeNumber" class="form-control" /> 
+                </div>
+            </div>
+            <div class="row g-3  mt-1">
+                <label for="staticEmail" class="col-auto">First name</label>
+                <div class="col-md-4">
+                    <InputText @bind-Value="employee.FirstName" class="form-control"></InputText>
+                    <ValidationMessage For="()=> employee.FirstName" class="text-danger" />
+                </div>
+            </div>
+            <div class="row g-3 mt-1">
+                <label for="inputPassword" class="col-auto">Last Name</label>
+                <div class="col-md-4">
+                    <InputText @bind-Value="employee.Lastname" class="form-control"></InputText>
+                    <ValidationMessage For="()=> employee.Lastname" class="text-danger" />
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-5 text-end">
+                    <a href="/Employee" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+}
+
+
+
+@code {
+    [Parameter] public int id { get; set; }
+    protected EditContext editContext { get; set; }
+    protected ValidationMessageStore messageStore { get; set; }
+
+    EmployeeDTO employee = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _employeeService.Get(id);
+
+        if (result.StatusCode == StatusCodeEnum.Code.Ok)
+            employee = result.Entity;
+
+
+        RefreshEditContext();
+    }
+
+    protected virtual void RefreshEditContext()
+    {
+        editContext = new EditContext(employee);
+        editContext.EnableDataAnnotationsValidation();
+        messageStore = new ValidationMessageStore(editContext);
+    }
+
+    protected virtual void ValidateOnChange(string fieldName)
+    {
+        editContext.NotifyFieldChanged(editContext.Field(fieldName));
+    }
+
+    async Task Update()
+    {
+        messageStore.Clear();
+        if (editContext.Validate())
+        {
+            var createResult = await _employeeService.Update(employee);
+            if (createResult.StatusCode == EmployeeTask.Shared.Enumerator.StatusCodeEnum.Code.Ok)
+                _navmanager.NavigateTo("/employee");
+            else
+                messageStore.Add(() => employee.ErrorMessage, createResult.Message);
+        }
+    }
+
+}

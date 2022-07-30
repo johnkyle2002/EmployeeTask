@@ -2,13 +2,13 @@
 
 namespace EmployeeTask.Shared.DataTrasferObject
 {
-    public class EmployeeDTO
+    public class EmployeeDTO : BaseDTO
     {
         public int EmployeeNumber { get; set; }
-        [Required(ErrorMessage ="First name field is required.")]
-        [RegularExpression(pattern:"[A-Za-z ")]
+        [Required(ErrorMessage = "First name field is required.")]
+        [RegularExpression(pattern: @"[A-Za-z\s]*", ErrorMessage = "Invalid input value")]
         public string FirstName { get; set; }
-        [RegularExpression(pattern:"[A-Za-z ")]
+        [RegularExpression(pattern: @"[A-Za-z\s]*", ErrorMessage = "Invalid input value")]
         [Required(ErrorMessage = "Last name field is required.")]
         public string Lastname { get; set; }
 

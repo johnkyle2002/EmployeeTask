@@ -118,6 +118,7 @@ else
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Temperature</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -128,7 +129,24 @@ else
                     <td>@employee.FirstName</td>
                     <td>@employee.Lastname</td>
                     <td>@string.Join(", ", employee.Temperature.Select(s=> s.Temperature))</td>
+                    <td>
+                        <a href="/employee/update/@employee.EmployeeNumber">Edit</a>
+                        <a href="javascript:;" @onclick="()=> employee.Delete = true">Delete</a>
+                    </td>
                 </tr>
+                @if (employee.Delete)
+                {
+                    <tr>
+                        <td colspan="6">
+                            <p>Delete record?</p>
+                            <p class="text-danger">@employee.ErrorMessage</p>
+                            <div class="text-end">
+                                <button type="button" class="btn btn-secondary" @onclick="()=> employee.Delete = false">Cancel</button>
+                                <button type="button" class="btn btn-primary" @onclick="() => DeleteEmployee(employee)">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
@@ -140,6 +158,7 @@ else
     private IList<EmployeeFilterDTO> Filters = new List<EmployeeFilterDTO>();
     private EmployeeFilterDTO Filter = new();
     private bool ShowAddFilter = false;
+    private bool ShowDeleteMessage = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -186,5 +205,15 @@ else
             employees = requestResult.Entity;
         else
             await _jsRuntime.InvokeVoidAsync("console.log", requestResult?.Message);
+    }
+
+    async Task DeleteEmployee(EmployeeDTO employee)
+    {
+        var result = await _employeeService.Remove(employee.EmployeeNumber);
+
+        if (result.StatusCode == StatusCodeEnum.Code.Ok)
+            employees.Remove(employee);
+        else
+            employee.ErrorMessage = result.Message;
     }
 }
